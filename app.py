@@ -2,12 +2,11 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 import plotly.graph_objects as go
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 from datetime import datetime, timedelta
 
 # --- 1. Global Setup ---
 st.set_page_config(page_title="ArbiMetal Nexus", layout="wide", initial_sidebar_state="collapsed")
-translator = Translator()
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -59,11 +58,11 @@ st.markdown("""
     
     /* BACKGROUND IMAGE */
     .stApp {
-        background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRT3XuLRn1pP79OM5_nWqPy-8aQesSTZ1S3mZiWUeWWTg&s=10");
+        background-image: url("https://images.unsplash.com/photo-1611926653458-09294b3142bf?q=80&w=2070&auto=format&fit=crop");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
-        color: #FFFFFF; /* Brighter white for default text */
+        color: #FFFFFF;
     }
     
     /* HEAVIER Dark Overlay for Better Text Visibility */
@@ -71,23 +70,22 @@ st.markdown("""
         content: "";
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
-        background-color: rgba(0, 0, 0, 0.88); /* Increased darkness */
+        background-color: rgba(0, 0, 0, 0.88); 
         z-index: -1;
     }
     
-    /* Glass Cards - Made larger and darker */
+    /* Glass Cards */
     .glass-card { 
-        background: rgba(15, 20, 25, 0.92); /* Darker background */
+        background: rgba(15, 20, 25, 0.92); 
         backdrop-filter: blur(25px); 
         border-radius: 18px; 
-        padding: 30px; /* Increased padding */
+        padding: 30px; 
         border: 1px solid rgba(255, 215, 0, 0.4); 
         box-shadow: 0 10px 40px 0 rgba(0,0,0,0.9);
         margin-top: 15px; 
-        font-size: 18px; /* Larger text inside cards */
+        font-size: 18px; 
     }
     
-    /* Headings - Brighter and Larger */
     h3 { 
         color: #FFFFFF !important; 
         text-shadow: 2px 2px 8px rgba(0,0,0,1); 
@@ -96,7 +94,6 @@ st.markdown("""
         margin-bottom: 15px !important;
     }
     
-    /* Alerts and Highlights - Larger padding and font */
     .ai-summary { 
         background: rgba(20, 20, 20, 0.95); 
         border-left: 6px solid #FFD700; 
@@ -121,22 +118,19 @@ st.markdown("""
         line-height: 1.6;
     }
     
-    /* Chatbot Styling - Larger text */
     .chat-container { border: 1px solid rgba(255,215,0,0.5); padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.85); max-height: 400px; overflow-y: auto;}
     .chat-user { background-color: rgba(255, 215, 0, 0.2); padding: 12px 20px; border-radius: 18px 18px 0px 18px; margin-bottom: 15px; width: fit-content; margin-left: auto; border: 1px solid rgba(255,215,0,0.6); font-size: 17px;}
     .chat-ai { background-color: rgba(30, 30, 30, 0.95); padding: 12px 20px; border-radius: 18px 18px 18px 0px; margin-bottom: 15px; border: 1px solid #00BFFF; width: fit-content; font-size: 17px;}
     
-    /* MAKE INPUT BOXES MUCH LARGER AND CLEARER */
     .stSelectbox div[data-baseweb="select"], .stDateInput div[data-baseweb="input"], .stTextInput div[data-baseweb="input"] {
         background-color: rgba(15, 15, 15, 0.9) !important;
         border: 2px solid rgba(255, 215, 0, 0.6) !important;
         border-radius: 10px !important;
         color: #FFFFFF !important;
-        font-size: 18px !important; /* Larger text inside boxes */
-        padding: 8px !important; /* Thicker boxes */
+        font-size: 18px !important; 
+        padding: 8px !important; 
     }
     
-    /* Label styling for inputs to make them pop */
     .stSelectbox label, .stDateInput label, .stTextInput label {
         color: #FFD700 !important;
         font-size: 18px !important;
@@ -144,7 +138,6 @@ st.markdown("""
         text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
     }
     
-    /* Data Table styling */
     [data-testid="stDataFrame"] { background: rgba(0,0,0,0.85); border-radius: 12px; font-size: 16px; }
     
     .sticky-header .stSelectbox { margin-bottom: 0px; width: 200px;}
@@ -156,14 +149,15 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
+# NEW TRANSLATION LOGIC USING DEEP-TRANSLATOR
 def translate(text, dest_lang):
     if dest_lang == "en" or not text: return text
-    try: return translator.translate(text, dest=dest_lang).text
+    try: return GoogleTranslator(source='auto', target=dest_lang).translate(text)
     except: return text 
 
 # --- 3. Language Selector ---
-st.markdown("<br><br>", unsafe_allow_html=True) # Added extra space
-col1, col_lang = st.columns([4, 1.5]) # Adjusted column width for larger select box
+st.markdown("<br><br>", unsafe_allow_html=True)
+col1, col_lang = st.columns([4, 1.5])
 with col_lang:
     lang_map = {"English": "en", "हिन्दी (Hindi)": "hi", "Español (Spanish)": "es"}
     sel_lang = st.selectbox("🌐 Language", list(lang_map.keys()), key="lang_selector")
@@ -172,7 +166,6 @@ with col_lang:
 # --- 4. Inputs ---
 st.markdown("---")
 st.markdown(f"### 📍 {translate('Location & Market Configuration', lang)}")
-# Using columns with adjusted ratios if needed, but 4 equal columns is usually fine
 col_reg, col_state, col_metal, col_date = st.columns(4)
 
 with col_reg:
@@ -251,19 +244,18 @@ st.markdown(f"<div class='ai-summary'><b>{translate(ai_msg, lang)}</b></div>", u
 # --- 7. Chart & Insights ---
 st.markdown(f"<br>### 📈 {translate('1-Year Price Trend', lang)}", unsafe_allow_html=True)
 fig = go.Figure()
-fig.add_trace(go.Scatter(x=df.index, y=df['Close'], name=translate('Live Price', lang), line=dict(color='#FFD700', width=3))) # Slightly thicker line
-fig.add_trace(go.Scatter(x=df.index, y=df['Long_Term'], name=translate('Historical Average', lang), line=dict(color='#00BFFF', width=2.5, dash='dot'))) # Slightly thicker line
+fig.add_trace(go.Scatter(x=df.index, y=df['Close'], name=translate('Live Price', lang), line=dict(color='#FFD700', width=3))) 
+fig.add_trace(go.Scatter(x=df.index, y=df['Long_Term'], name=translate('Historical Average', lang), line=dict(color='#00BFFF', width=2.5, dash='dot'))) 
 
 fig.update_layout(
     template="plotly_dark", 
-    plot_bgcolor='rgba(0,0,0,0.6)', # Darker chart background
+    plot_bgcolor='rgba(0,0,0,0.6)', 
     paper_bgcolor='rgba(0,0,0,0)', 
-    height=450, # Slightly taller chart
+    height=450, 
     margin=dict(l=0, r=0, t=20, b=0), 
     hovermode="x unified",
-    font=dict(color='#FFFFFF', size=14) # Brighter and larger font in chart
+    font=dict(color='#FFFFFF', size=14) 
 )
-# Make gridlines less prominent but visible
 fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='rgba(255,255,255,0.1)')
 fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='rgba(255,255,255,0.1)')
 
@@ -336,4 +328,4 @@ st.markdown("---")
 st.markdown(f"### 🗃️ {translate('Raw Tabular Data', lang)} ({curr})")
 display_df = df[['Open', 'High', 'Low', 'Close']].sort_index(ascending=False)
 display_df.index = display_df.index.strftime('%Y-%m-%d')
-st.dataframe(display_df, use_container_width=True, height=400) # Increased height of the table
+st.dataframe(display_df, use_container_width=True, height=400)

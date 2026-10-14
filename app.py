@@ -58,7 +58,7 @@ st.markdown("""
     
     /* BACKGROUND IMAGE */
     .stApp {
-        background-image: url("https://media.assettype.com/outlookbusiness/2025-06-11/cmj4vc4g/gold-silver-bars-stacked-financial-concept-background845403-149.avif?w=640");
+        background-image: url("https://indiait360.com/digitalmarketing");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;

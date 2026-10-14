@@ -2,4 +2,4 @@ streamlit
 yfinance
 pandas
 plotly
-googletrans==4.0.0-rcl
+googletrans==4.0.0-rc1
